@@ -1,0 +1,12 @@
+[package]
+name = "gamepad-web"
+version = "0.1.0"
+authors = ["Cory Sherman <coryshrmn@gmail.com>"]
+
+[dependencies]
+stdweb = { git = "https://github.com/coryshrmn/stdweb", branch = "feature/gamepad" }
+# TODO use Cargo's stdweb once features/gamepad is merged and released
+# stdweb = "0.4.7"
+
+[features]
+web_test = []
