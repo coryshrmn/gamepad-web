@@ -46,6 +46,23 @@ impl Monitor {
         }
     }
 
+    fn update_state(pad: &mut ConnectedPad, raw: &Gamepad, queue: &mut VecDeque<Event>) {
+
+        // skip update if we already processed this timestamp
+        if pad.state.timestamp == raw.timestamp() {
+            return;
+        }
+
+        let next_state: GamepadState = raw.into();
+
+        // queue any changes as events
+        queue.extend( next_state.diff(&pad.state)
+            .map(|change| Event::new(pad.info.clone(), (&change).into()))
+        );
+
+        pad.state = next_state;
+    }
+
     /// Update our stored snapshot from given Pad state. Enqueue any changes.
     fn update_pad(&mut self, i: usize, raw: &Gamepad) {
 
@@ -55,23 +72,7 @@ impl Monitor {
 
         // always true, since we connect ^^^
         if let Some(pad) = &mut self.pads[i] {
-
-            // skip update if we already processed this timestamp
-            if pad.state.timestamp == raw.timestamp() {
-                return;
-            }
-
-            let next_state: GamepadState = raw.into();
-            {
-                let events = next_state.diff(&pad.state)
-                    .map(|change|
-                        Event::new(pad.info.clone(), (&change).into())
-                    );
-
-                self.queue.extend(events);
-            }
-
-            pad.state = next_state;
+            Monitor::update_state(pad, raw, &mut self.queue);
         }
         else {
             unreachable!();
