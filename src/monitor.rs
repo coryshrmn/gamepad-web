@@ -13,8 +13,6 @@ use std::rc::Rc;
 
 use stdweb::web::{
     Gamepad,
-    get_gamepads,
-    IGamepad,
 };
 
 #[derive(Debug, PartialEq, Clone)]
@@ -105,10 +103,10 @@ impl Monitor {
 
     fn fetch_update(&mut self) {
 
-        // get_gamepads() MUST be called each update.
+        // navigator.getGamepads() MUST be called each update.
         // Chrome only updates Gamepad state in get_gamepads()
         // (Counter to MDN documentation, which indicates we can save Gamepad references)
-        let raw_pads = get_gamepads();
+        let raw_pads = Gamepad::get_all();
 
         self.resize_pads(raw_pads.len());
 

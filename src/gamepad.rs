@@ -1,8 +1,7 @@
 use stdweb::web::{
     Gamepad,
+    GamepadButton,
     GamepadMappingType,
-    IGamepad,
-    IGamepadButton,
 };
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -68,7 +67,7 @@ impl<'a> From<&'a Gamepad> for GamepadState {
             timestamp: pad.timestamp(),
             axes: pad.axes(),
             buttons: pad.buttons().iter()
-                .map(IGamepadButton::pressed)
+                .map(GamepadButton::pressed)
                 .collect(),
         }
     }
