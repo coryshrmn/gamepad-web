@@ -66,17 +66,10 @@ impl Monitor {
     /// Update our stored snapshot from given Pad state. Enqueue any changes.
     fn update_pad(&mut self, i: usize, raw: &Gamepad) {
 
-        if self.pads[i].is_none() {
-            self.connect_pad(i, raw.into());
-        }
+        let queue = &mut self.queue;
 
-        // always true, since we connect ^^^
-        if let Some(pad) = &mut self.pads[i] {
-            Monitor::update_state(pad, raw, &mut self.queue);
-        }
-        else {
-            unreachable!();
-        }
+        let pad = self.pads[i].get_or_insert_with(|| Monitor::make_connected(&raw, queue));
+        Monitor::update_state(pad, raw, queue);
     }
 
     /// Reset the pad to None and emit a disconnected event.
@@ -87,11 +80,12 @@ impl Monitor {
         }
     }
 
-    /// Set the pad to Some() and emit a connected event.
-    fn connect_pad(&mut self, i: usize, info: GamepadInfo) {
+    /// Creates a ConnectedPad and adds a connected event to queue
+    fn make_connected(raw: &Gamepad, queue: &mut VecDeque<Event>) -> ConnectedPad {
+        let info: GamepadInfo = raw.into();
         let pad: ConnectedPad = info.into();
-        self.queue.push_back(Event::new(pad.info.clone(), EventData::Connected));
-        self.pads[i] = Some(pad);
+        queue.push_back(Event::new(pad.info.clone(), EventData::Connected));
+        pad
     }
 
     fn resize_pads(&mut self, size: usize) {
