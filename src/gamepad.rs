@@ -1,14 +1,11 @@
-use stdweb::web::{
-    Gamepad,
-    GamepadButton,
-};
-
+use stdweb::web::Gamepad;
 pub use stdweb::web::GamepadMappingType;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum GamepadStateChange {
     Axis(usize, f64),
     Button(usize, bool),
+    ButtonValue(usize, f64),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -34,12 +31,36 @@ impl<'a> From<&'a Gamepad> for GamepadDescription {
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct GamepadState {
-    pub timestamp: f64,
-    pub axes: Vec<f64>,
-    pub buttons: Vec<bool>,
+    timestamp: f64,
+    axes: Vec<f64>,
+    buttons: Vec<(bool, f64)>,
 }
 
 impl GamepadState {
+
+    pub fn timestamp(&self) -> f64 {
+        self.timestamp
+    }
+
+    pub fn axis_count(&self) -> usize {
+        self.axes.len()
+    }
+
+    pub fn button_count(&self) -> usize {
+        self.buttons.len()
+    }
+
+    pub fn axis(&self, index: usize) -> f64 {
+        self.axes[index]
+    }
+
+    pub fn button_pressed(&self, index: usize) -> bool {
+        self.buttons[index].0
+    }
+
+    pub fn button_value(&self, index: usize) -> f64 {
+        self.buttons[index].1
+    }
 
     /// Find the changes in this state, compared to a previous state.
     pub fn diff<'a>(&'a self, previous: &'a Self) -> impl Iterator<Item=GamepadStateChange> + 'a {
@@ -52,11 +73,18 @@ impl GamepadState {
         let changed_buttons = previous.buttons.iter()
             .zip(self.buttons.iter())
             .enumerate()
-            .filter(|(_, (old, new))| old != new)
-            .map(|(i, (_, &new))| GamepadStateChange::Button(i, new));
+            .filter(|(_, (old, new))| old.0 != new.0)
+            .map(|(i, (_, &new))| GamepadStateChange::Button(i, new.0));
+
+        let changed_button_values = previous.buttons.iter()
+            .zip(self.buttons.iter())
+            .enumerate()
+            .filter(|(_, (old, new))| old.1.to_bits() != new.1.to_bits())
+            .map(|(i, (_, &new))| GamepadStateChange::ButtonValue(i, new.1));
 
         changed_axes
             .chain(changed_buttons)
+            .chain(changed_button_values)
     }
 }
 
@@ -68,7 +96,7 @@ impl<'a> From<&'a Gamepad> for GamepadState {
             timestamp: pad.timestamp(),
             axes: pad.axes(),
             buttons: pad.buttons().iter()
-                .map(GamepadButton::pressed)
+                .map(|b| (b.pressed(), b.value()))
                 .collect(),
         }
     }
@@ -84,7 +112,7 @@ impl<'a> From<&'a GamepadDescription> for GamepadState {
         Self {
             timestamp: -1.0,
             axes: vec![0.0; desc.axis_count],
-            buttons: vec![false; desc.button_count],
+            buttons: vec![(false, 0.0); desc.button_count],
         }
     }
 }

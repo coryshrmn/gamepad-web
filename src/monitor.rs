@@ -47,7 +47,7 @@ impl Monitor {
     fn update_state(pad: &mut ConnectedPad, raw: &Gamepad, queue: &mut VecDeque<Event>) {
 
         // skip update if we already processed this timestamp
-        if pad.state.timestamp == raw.timestamp() {
+        if pad.state.timestamp() == raw.timestamp() {
             return;
         }
 

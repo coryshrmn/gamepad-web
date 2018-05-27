@@ -5,8 +5,6 @@ mod gamepad;
 mod monitor;
 
 pub use event::{
-    AnalogChange,
-    DigitalChange,
     Event,
     EventData,
 };
