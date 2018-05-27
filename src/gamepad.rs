@@ -1,5 +1,6 @@
 use stdweb::web::{
     Gamepad,
+    GamepadMappingType,
     IGamepad,
     IGamepadButton,
 };
@@ -10,34 +11,37 @@ pub enum Change {
     Button(usize, bool),
 }
 
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub struct GamepadInfo {
+    pub index: i32,
+    pub name: String,
+    pub mapping: GamepadMappingType,
+    pub axis_count: usize,
+    pub button_count: usize,
+}
+
+impl<'a> From<&'a Gamepad> for GamepadInfo {
+    fn from(pad: &'a Gamepad) -> Self {
+        Self {
+            index: pad.index(),
+            name: pad.id().into(),
+            mapping: pad.mapping(),
+            axis_count: pad.axes().len(),
+            button_count: pad.buttons().len(),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Clone)]
-pub struct Snapshot {
+pub struct GamepadState {
     pub timestamp: f64,
     pub axes: Vec<f64>,
     pub buttons: Vec<bool>,
 }
 
-impl Snapshot {
+impl GamepadState {
 
-    #[cfg(test)]
-    pub fn new(timestamp: f64, axes_count: usize, button_count: usize) -> Self {
-        Self {
-            timestamp,
-            axes: vec![0.0; axes_count],
-            buttons: vec![false; button_count],
-        }
-    }
-
-    /// Set all axes/buttons to 0.0/unpressed.
-    pub fn clear(&mut self) {
-        for a in &mut self.axes {
-            *a = 0.0;
-        }
-        for b in &mut self.buttons {
-            *b = false;
-        }
-    }
-
+    /// Find the changes in this state, compared to a previous state.
     pub fn diff<'a>(&'a self, previous: &'a Self) -> impl Iterator<Item=Change> + 'a {
         let changed_axes = previous.axes.iter()
             .zip(self.axes.iter())
@@ -51,20 +55,36 @@ impl Snapshot {
             .filter(|(_, (old, new))| old != new)
             .map(|(i, (_, &new))| Change::Button(i, new));
 
-
         changed_axes
             .chain(changed_buttons)
     }
 }
 
-impl<'a> From<&'a Gamepad> for Snapshot {
+impl<'a> From<&'a Gamepad> for GamepadState {
+
+    /// Snapshot the current Gamepad state.
     fn from(pad: &'a Gamepad) -> Self {
         Self {
             timestamp: pad.timestamp(),
+            axes: pad.axes(),
             buttons: pad.buttons().iter()
                 .map(IGamepadButton::pressed)
                 .collect(),
-            axes: pad.axes(),
+        }
+    }
+}
+
+impl<'a> From<&'a GamepadInfo> for GamepadState {
+
+    /// Create a default GamepadState (axes at 0.0, buttons not pressed),
+    /// with the given number of axes and buttons.
+    ///
+    /// Timestamp is -1.0, so this will always be "before" a recorded GamepadState.
+    fn from(info: &'a GamepadInfo) -> Self {
+        Self {
+            timestamp: -1.0,
+            axes: vec![0.0; info.axis_count],
+            buttons: vec![false; info.button_count],
         }
     }
 }
@@ -73,13 +93,23 @@ impl<'a> From<&'a Gamepad> for Snapshot {
 mod tests {
 
     use super::{
-        Snapshot,
         Change,
+        GamepadInfo,
+        GamepadState,
     };
 
     #[test]
-    fn test_snapshot_diff() {
-        let empty = Snapshot::new(0.0, 2, 2);
+    fn test_gamepad_state_diff() {
+
+        let info = GamepadInfo {
+            index: 0,
+            name: "".into(),
+            mapping: GamepadMappingType::NoMapping,
+            axis_count: 2,
+            button_count: 2,
+        };
+
+        let empty: GamepadState = info.into();
 
         assert_eq!(empty.diff(&empty).collect::<Vec<_>>(), vec![]);
 
