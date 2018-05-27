@@ -1,6 +1,6 @@
 use ::gamepad::{
-    Change,
-    GamepadInfo,
+    GamepadDescription,
+    GamepadStateChange,
 };
 
 use std::fmt::{
@@ -10,43 +10,43 @@ use std::fmt::{
 };
 use std::rc::Rc;
 
-#[derive(Debug, PartialEq, Clone)]
-pub struct Analog {
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub struct AnalogChange {
     pub index: usize,
     pub value: f64,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone)]
-pub struct Digital {
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub struct DigitalChange {
     pub index: usize,
     pub pressed: bool,
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum EventData {
     Connected,
     Disconnected,
-    Axis(Analog),
-    Button(Digital),
+    Axis(AnalogChange),
+    Button(DigitalChange),
 }
 
-impl<'a> From<&'a Change> for EventData {
-    fn from(change: &'a Change) -> Self {
+impl<'a> From<&'a GamepadStateChange> for EventData {
+    fn from(change: &'a GamepadStateChange) -> Self {
         match change {
-            &Change::Axis(index, value) => EventData::Axis(Analog { index, value }),
-            &Change::Button(index, pressed) => EventData::Button(Digital { index, pressed }),
+            &GamepadStateChange::Axis(index, value) => EventData::Axis(AnalogChange { index, value }),
+            &GamepadStateChange::Button(index, pressed) => EventData::Button(DigitalChange { index, pressed }),
         }
     }
 }
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Event {
-    pub gamepad: Rc<GamepadInfo>,
+    pub gamepad: Rc<GamepadDescription>,
     pub data: EventData
 }
 
 impl Event {
-    pub fn new(gamepad: Rc<GamepadInfo>, data: EventData) -> Self {
+    pub fn new(gamepad: Rc<GamepadDescription>, data: EventData) -> Self {
         Self {
             gamepad,
             data,

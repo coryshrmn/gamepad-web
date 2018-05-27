@@ -3,7 +3,7 @@ use ::event::{
     EventData,
 };
 use ::gamepad::{
-    GamepadInfo,
+    GamepadDescription,
     GamepadState,
 };
 
@@ -17,16 +17,16 @@ use stdweb::web::{
 
 #[derive(Debug, PartialEq, Clone)]
 struct ConnectedPad {
-    info: Rc<GamepadInfo>,
+    desc: Rc<GamepadDescription>,
     state: GamepadState,
 }
 
-impl From<GamepadInfo> for ConnectedPad {
-    fn from(info: GamepadInfo) -> Self {
-        let info = Rc::new(info);
+impl From<GamepadDescription> for ConnectedPad {
+    fn from(desc: GamepadDescription) -> Self {
+        let desc = Rc::new(desc);
         Self {
-            info: info.clone(),
-            state: info.as_ref().into(),
+            desc: desc.clone(),
+            state: desc.as_ref().into(),
         }
     }
 }
@@ -55,7 +55,7 @@ impl Monitor {
 
         // queue any changes as events
         queue.extend( next_state.diff(&pad.state)
-            .map(|change| Event::new(pad.info.clone(), (&change).into()))
+            .map(|change| Event::new(pad.desc.clone(), (&change).into()))
         );
 
         pad.state = next_state;
@@ -74,15 +74,15 @@ impl Monitor {
     /// Does nothing if pad is already disconnected.
     fn disconnect_pad(&mut self, i: usize) {
         if let Some(pad) = self.pads[i].take() {
-            self.queue.push_back(Event::new(pad.info, EventData::Disconnected));
+            self.queue.push_back(Event::new(pad.desc, EventData::Disconnected));
         }
     }
 
     /// Creates a ConnectedPad and adds a connected event to queue
     fn make_connected(raw: &Gamepad, queue: &mut VecDeque<Event>) -> ConnectedPad {
-        let info: GamepadInfo = raw.into();
-        let pad: ConnectedPad = info.into();
-        queue.push_back(Event::new(pad.info.clone(), EventData::Connected));
+        let desc: GamepadDescription = raw.into();
+        let pad: ConnectedPad = desc.into();
+        queue.push_back(Event::new(pad.desc.clone(), EventData::Connected));
         pad
     }
 
@@ -126,5 +126,22 @@ impl Monitor {
         }
 
         self.queue.pop_front()
+    }
+
+    fn get_pad(&self, index: usize) -> Option<&ConnectedPad> {
+        if index < self.pads.len() {
+            self.pads[index].as_ref()
+        }
+        else {
+            None
+        }
+    }
+
+    pub fn get_pad_description(&self, index: usize) -> Option<&GamepadDescription> {
+        self.get_pad(index).map(|pad| pad.desc.as_ref())
+    }
+
+    pub fn get_pad_state(&self, index: usize) -> Option<&GamepadState> {
+        self.get_pad(index).map(|pad| &pad.state)
     }
 }
