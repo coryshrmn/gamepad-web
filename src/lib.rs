@@ -2,6 +2,7 @@ extern crate stdweb;
 
 mod event;
 mod gamepad;
+mod monitor;
 
 pub use event::Event;
-pub use gamepad::Monitor;
+pub use monitor::Monitor;
