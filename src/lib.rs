@@ -1,7 +1,7 @@
 extern crate stdweb;
 
 mod event;
-mod gamepad;
+mod snapshot;
 mod monitor;
 
 pub use event::Event;
