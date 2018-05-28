@@ -1,6 +1,6 @@
 //! # Event-based Gamepad Web Backend
 //!
-//! [Documentation](https://coryshrmn.github.io/gamepad-web/doc/gamepad_web/)
+//! [GitHub repository](https://github.com/coryshrmn/gamepad-web)
 //!
 //! This crate extends the
 //! [Gamepad Web API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API),
