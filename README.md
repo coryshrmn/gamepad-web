@@ -1,6 +1,6 @@
 # Event-based Gamepad Web Backend
 
-[Documentation](https://coryshrmn.github.io/gamepad-web/doc/gamepad_web/)
+[Documentation](https://coryshrmn.github.io/gamepad-web/doc/gamepad_web/index.html)
 
 This crate extends the
 [Gamepad Web API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API),
@@ -51,9 +51,9 @@ See the full [mapping example](examples/mapping).
 
 The compiled examples are also hosted here:
 
-* [log](https://coryshrmn.github.io/gamepad-web/examples/log/deploy/): view raw events
-* [layout](https://coryshrmn.github.io/gamepad-web/examples/layout/deploy/): visualize gamepad state, mapped to standard gamepads where available
-* [mapped](https://coryshrmn.github.io/gamepad-web/examples/mapped/deploy/): use the simplest API for single-player interaction
+* [log](https://coryshrmn.github.io/gamepad-web/examples/log/deploy/index.html): view raw events
+* [layout](https://coryshrmn.github.io/gamepad-web/examples/layout/deploy/index.html): visualize gamepad state, mapped to standard gamepads where available
+* [mapping](https://coryshrmn.github.io/gamepad-web/examples/mapping/deploy/index.html): use the simplest API for single-player interaction
 
 ## License
 
