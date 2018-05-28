@@ -1,0 +1,15 @@
+#player {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    transition: bottom 0.5s;
+}
+
+#player div {
+    position: relative;
+    text-align: center;
+}
+
+.jump {
+    bottom: 70% !important;
+}

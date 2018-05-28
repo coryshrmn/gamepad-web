@@ -1,0 +1,10 @@
+(function() {var implementors = {};
+implementors["gamepad_web"] = [{text:"impl&lt;'a&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;'a <a class=\"enum\" href=\"gamepad_web/enum.GamepadStateChange.html\" title=\"enum gamepad_web::GamepadStateChange\">GamepadStateChange</a>&gt; for <a class=\"enum\" href=\"gamepad_web/enum.EventData.html\" title=\"enum gamepad_web::EventData\">EventData</a>",synthetic:false,types:["gamepad_web::event::EventData"]},{text:"impl&lt;'a&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;'a Gamepad&gt; for <a class=\"struct\" href=\"gamepad_web/struct.GamepadDescription.html\" title=\"struct gamepad_web::GamepadDescription\">GamepadDescription</a>",synthetic:false,types:["gamepad_web::gamepad::GamepadDescription"]},{text:"impl&lt;'a&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;'a Gamepad&gt; for <a class=\"struct\" href=\"gamepad_web/struct.GamepadState.html\" title=\"struct gamepad_web::GamepadState\">GamepadState</a>",synthetic:false,types:["gamepad_web::gamepad::GamepadState"]},{text:"impl&lt;'a&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;'a <a class=\"struct\" href=\"gamepad_web/struct.GamepadDescription.html\" title=\"struct gamepad_web::GamepadDescription\">GamepadDescription</a>&gt; for <a class=\"struct\" href=\"gamepad_web/struct.GamepadState.html\" title=\"struct gamepad_web::GamepadState\">GamepadState</a>",synthetic:false,types:["gamepad_web::gamepad::GamepadState"]},];
+
+            if (window.register_implementors) {
+                window.register_implementors(implementors);
+            } else {
+                window.pending_implementors = implementors;
+            }
+        
+})()

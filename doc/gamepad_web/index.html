@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `gamepad_web` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, gamepad_web">
+
+    <title>gamepad_web - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css"
+          id="mainThemeStyle">
+    
+    <link rel="stylesheet" type="text/css" href="../dark.css">
+    <link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle">
+    <script src="../storage.js"></script>
+    
+
+    
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
+        
+        <p class='location'>Crate gamepad_web</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'gamepad_web', ty: 'mod', relpath: '../'};</script></div>
+    </nav>
+
+    <div class="theme-picker">
+        <button id="theme-picker" aria-label="Pick another theme!">
+            <img src="../brush.svg" width="18" alt="Pick another theme!">
+        </button>
+        <div id="theme-choices"></div>
+    </div>
+    <script src="../theme.js"></script>
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content"><h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>gamepad_web</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/gamepad_web/lib.rs.html#1-62' title='goto source code'>[src]</a></span></h1><div class='docblock'><h1 id="event-based-gamepad-web-backend" class="section-header"><a href="#event-based-gamepad-web-backend">Event-based Gamepad Web Backend</a></h1>
+<p><a href="https://github.com/coryshrmn/gamepad-web">GitHub repository</a></p>
+<p>This crate extends the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API">Gamepad Web API</a>,
+to emit events for button and axis state changes.</p>
+<p>Our goal is to resemble a native API,
+which emits an event for each state change,
+unlike the Web API,
+which only allows state querying.</p>
+<h2 id="quick-start" class="section-header"><a href="#quick-start">Quick Start</a></h2>
+<pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">gamepad_web</span>::<span class="kw-2">*</span>;
+
+<span class="comment">// start listening for Gamepad events</span>
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">monitor</span> <span class="op">=</span> <span class="ident">Monitor</span>::<span class="ident">new</span>();
+
+<span class="kw">fn</span> <span class="ident">update</span>() {
+    <span class="comment">// process new input events</span>
+    <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">event</span>) <span class="op">=</span> <span class="ident">monitor</span>.<span class="ident">poll_mapped</span>() {
+        <span class="kw">match</span> <span class="ident">event</span> {
+            <span class="ident">MappedEvent</span>::<span class="ident">ButtonPress</span>(<span class="ident">Button</span>::<span class="ident">South</span>) <span class="op">=&gt;</span> <span class="comment">// &quot;A&quot; on Xbox</span>
+                <span class="ident">player</span>.<span class="ident">jump</span>(),
+            <span class="ident">MappedEvent</span>::<span class="ident">Axis</span>(<span class="ident">Axis</span>::<span class="ident">LeftStickX</span>, <span class="ident">x</span>) <span class="op">=&gt;</span>
+                <span class="ident">player</span>.<span class="ident">set_velocity</span>(<span class="ident">x</span>),
+            <span class="kw">_</span> <span class="op">=&gt;</span> ()
+        }
+    }
+}
+</pre>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Event.html"
+                                  title='struct gamepad_web::Event'>Event</a></td>
+                           <td class='docblock-short'>
+                                <p>An event, including connections, disconnections, and button/axis input.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.GamepadDescription.html"
+                                  title='struct gamepad_web::GamepadDescription'>GamepadDescription</a></td>
+                           <td class='docblock-short'>
+                                <p>Information about a gamepad. Remains constant while the gamepad is connected.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.GamepadState.html"
+                                  title='struct gamepad_web::GamepadState'>GamepadState</a></td>
+                           <td class='docblock-short'>
+                                <p>Snapshot of a gamepad's state at one instant.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Monitor.html"
+                                  title='struct gamepad_web::Monitor'>Monitor</a></td>
+                           <td class='docblock-short'>
+                                <p>Listen for gamepad events</p>
+
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.Axis.html"
+                                  title='enum gamepad_web::Axis'>Axis</a></td>
+                           <td class='docblock-short'>
+                                <p>A named axis on the standard gamepad.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.Button.html"
+                                  title='enum gamepad_web::Button'>Button</a></td>
+                           <td class='docblock-short'>
+                                <p>A named button on the standard gamepad.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.EventData.html"
+                                  title='enum gamepad_web::EventData'>EventData</a></td>
+                           <td class='docblock-short'>
+                                <p>The data associated with an event, not including the gamepad itself.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.GamepadMappingType.html"
+                                  title='enum gamepad_web::GamepadMappingType'>GamepadMappingType</a></td>
+                           <td class='docblock-short'>
+                                <p>The set of known gamepad layout mappings.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.GamepadStateChange.html"
+                                  title='enum gamepad_web::GamepadStateChange'>GamepadStateChange</a></td>
+                           <td class='docblock-short'>
+                                <p>A change in axis or button state.</p>
+
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.MappedEvent.html"
+                                  title='enum gamepad_web::MappedEvent'>MappedEvent</a></td>
+                           <td class='docblock-short'>
+                                <p>An input event, mapped to one of the standard buttons or axes.</p>
+
+                           </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="trait" href="trait.Mapping.html"
+                                  title='trait gamepad_web::Mapping'>Mapping</a></td>
+                           <td class='docblock-short'>
+                                <p>A relation between indices and names, for buttons and axes.</p>
+
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt><kbd>?</kbd></dt>
+                    <dd>Show this help dialog</dd>
+                    <dt><kbd>S</kbd></dt>
+                    <dd>Focus the search field</dd>
+                    <dt><kbd>↑</kbd></dt>
+                    <dd>Move up in search results</dd>
+                    <dt><kbd>↓</kbd></dt>
+                    <dd>Move down in search results</dd>
+                    <dt><kbd>↹</kbd></dt>
+                    <dd>Switch tab</dd>
+                    <dt><kbd>&#9166;</kbd></dt>
+                    <dd>Go to active search result</dd>
+                    <dt><kbd>+</kbd></dt>
+                    <dd>Expand all sections</dd>
+                    <dt><kbd>-</kbd></dt>
+                    <dd>Collapse all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "gamepad_web";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
