@@ -1,8 +1,3 @@
-// TODO remove
-#![allow(unused_imports)]
-#![allow(dead_code)]
-#![allow(unused_variables)]
-
 extern crate gamepad_web;
 extern crate stdweb;
 
@@ -181,7 +176,6 @@ impl ControllerDom for UnmappedDom {
 
     fn set_axis(&self, index: usize, value: f64) {
         let axis = &self.axes[index];
-        let level = 50.0 - 50.0 * value;
 
         let style = format!("top: {}%; height: {}%",
             if value <= 0.0 { 50.0 } else { 50.0 - 50.0 * value },
