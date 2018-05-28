@@ -22,3 +22,8 @@ to interface with the Gamepad Web API.
 2. Run the tests
 
         $ cargo web test --features web_test
+
+## License
+
+Dual licensed under [Apache](LICENSE-APACHE) and [MIT](LICENSE-MIT).
+Use Apache unless your lawyers won't let you.
