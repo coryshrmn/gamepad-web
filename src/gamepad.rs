@@ -188,13 +188,13 @@ mod tests {
         assert_eq!(empty.changes_since(&empty).collect::<Vec<_>>(), vec![]);
 
         let mut pressed0 = empty.clone();
-        pressed0.buttons[0] = true;
+        pressed0.buttons[0].0 = true;
 
         assert_eq!(pressed0.changes_since(&empty).collect::<Vec<_>>(), vec![GamepadStateChange::Button(0, true)]);
         assert_eq!(empty.changes_since(&pressed0).collect::<Vec<_>>(), vec![GamepadStateChange::Button(0, false)]);
 
         let mut pressed1 = empty.clone();
-        pressed1.buttons[1] = true;
+        pressed1.buttons[1].0 = true;
 
         let p1_changes_since0: Vec<_> = pressed1.changes_since(&pressed0).collect();
         assert_eq!(p1_changes_since0.len(), 2);

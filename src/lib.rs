@@ -15,22 +15,31 @@
 //!
 //! ```
 //! use gamepad_web::*;
+//! fn main() {
+//!     // start listening for Gamepad events
+//!     let mut monitor = Monitor::new();
 //!
-//! // start listening for Gamepad events
-//! let mut monitor = Monitor::new();
-//!
-//! fn update() {
+//!     // start animation loop
+//!     next_frame(monitor);
+//! }
+//! fn next_frame(mut monitor: Monitor) {
 //!     // process new input events
 //!     while let Some(event) = monitor.poll_mapped() {
 //!         match event {
 //!             MappedEvent::ButtonPress(Button::South) => // "A" on Xbox
-//!                 player.jump(),
+//!                 jump(),
 //!             MappedEvent::Axis(Axis::LeftStickX, x) =>
-//!                 player.set_velocity(x),
+//!                 set_velocity(x),
 //!             _ => ()
 //!         }
 //!     }
+//!
+//!     // queue the next frame
+//!     request_animation_frame(move |_| next_frame(monitor));
 //! }
+//! # fn jump() {}
+//! # fn set_velocity(x: f64) {}
+//! # fn request_animation_frame(callback: impl FnOnce(f64) + 'static) {}
 //!
 //! ```
 
