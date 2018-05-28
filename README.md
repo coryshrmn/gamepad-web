@@ -51,9 +51,9 @@ See the full [mapping example](examples/mapping).
 
 The compiled examples are also hosted here:
 
-* [log](https://coryshrmn.github.io/gamepad-web/examples/log/): view raw events
-* [layout](https://coryshrmn.github.io/gamepad-web/examples/layout/): visualize gamepad state, mapped to standard gamepads where available
-* [mapped](https://coryshrmn.github.io/gamepad-web/examples/mapped/): use the simplest API for single-player interaction
+* [log](https://coryshrmn.github.io/gamepad-web/examples/log/deploy/): view raw events
+* [layout](https://coryshrmn.github.io/gamepad-web/examples/layout/deploy/): visualize gamepad state, mapped to standard gamepads where available
+* [mapped](https://coryshrmn.github.io/gamepad-web/examples/mapped/deploy/): use the simplest API for single-player interaction
 
 ## License
 
