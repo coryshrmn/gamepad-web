@@ -42,128 +42,157 @@ fn gamepad_list() -> Element {
     select("#gamepad-list")
 }
 
+trait ControllerDom {
+    fn root(&self) -> &Element;
+    fn set_axis(&self, index: usize, value: f64);
+    fn set_button(&self, index: usize, pressed: bool);
+    fn set_button_value(&self, index: usize, value: f64);
+}
 
-struct ControllerView {
+struct MappedDom {
     mapping: GamepadMappingType,
     root: Element,
+}
+
+impl MappedDom {
+    fn new(desc: &GamepadDescription) -> Self {
+        let root = select("#standard-template").clone_node(CloneKind::Deep).unwrap();
+        root.remove_attribute("id");
+
+        select_from(&root, ".gp-name").set_text_content(&desc.name);
+
+        Self {
+            mapping: desc.mapping,
+            root,
+        }
+    }
+}
+
+impl ControllerDom for MappedDom {
+    fn root(&self) -> &Element {
+        &self.root
+    }
+
+    fn set_axis(&self, index: usize, value: f64) {
+        let (selector, is_x) = match self.mapping.map_axis(index).unwrap() {
+            Axis::LeftStickX => (".gp-stick-left-x", true),
+            Axis::LeftStickY => (".gp-stick-left-y", false),
+            Axis::RightStickX => (".gp-stick-right-x", true),
+            Axis::RightStickY => (".gp-stick-right-y", false),
+        };
+
+        let style = format!("{}: {}%",
+            if is_x { "left" } else { "top" },
+            (50.0 + value * 50.0)
+        );
+
+        select_from(&self.root, selector).set_attribute("style", &style).unwrap();
+    }
+
+    fn set_button(&self, index: usize, pressed: bool) {
+        let selector = match self.mapping.map_button(index).unwrap() {
+            Button::South => ".gp-a",
+            Button::East => ".gp-b",
+            Button::West => ".gp-x",
+            Button::North => ".gp-y",
+            Button::LT1 => ".gp-left-triggers .gp-trigger-1",
+            Button::RT1 => ".gp-right-triggers .gp-trigger-1",
+            Button::LT2 => ".gp-left-triggers .gp-trigger-2",
+            Button::RT2 => ".gp-right-triggers .gp-trigger-2",
+            Button::Select => ".gp-select",
+            Button::Start => ".gp-start",
+            Button::LeftStick => ".gp-stick-left",
+            Button::RightStick => ".gp-stick-right",
+            Button::Up => ".gp-dpad-up",
+            Button::Down => ".gp-dpad-down",
+            Button::Left => ".gp-dpad-left",
+            Button::Right => ".gp-dpad-right",
+            Button::Home => ".gp-home",
+        };
+
+        let style = if pressed { "background-color: orange" } else { "" };
+        select_from(&self.root, selector).set_attribute("style", style).unwrap();
+    }
+
+    fn set_button_value(&self, index: usize, value: f64) {
+        let selector = match self.mapping.map_button(index).unwrap() {
+            Button::LT2 => Some(".gp-left-triggers div div"),
+            Button::RT2 => Some(".gp-right-triggers div div"),
+            _ => None,
+        };
+
+        if let Some(selector) = selector {
+            let elem = select_from(&self.root, selector);
+            let style = format!("bottom: {}%", value * 100.0);
+            elem.set_attribute("style", &style).unwrap();
+        }
+    }
+}
+
+struct UnmappedDom {
+    root: Element,
+    buttons: Vec<Element>,
+    axes: Vec<Element>,
+}
+
+impl UnmappedDom {
+    fn new(desc: &GamepadDescription) -> Self {
+        unimplemented!()
+    }
+}
+
+impl ControllerDom for UnmappedDom {
+    fn root(&self) -> &Element {
+        &self.root
+    }
+
+    fn set_axis(&self, index: usize, value: f64) {
+        unimplemented!()
+    }
+
+    fn set_button(&self, index: usize, pressed: bool) {
+        unimplemented!()
+    }
+
+    fn set_button_value(&self, index: usize, value: f64) {
+        unimplemented!()
+    }
+}
+
+struct ControllerView {
+    dom: Box<ControllerDom>,
 }
 
 impl ControllerView {
 
     /// Create a new view for this gamepad, as a child of elem.
     pub fn new(desc: &GamepadDescription, elem: &impl INode) -> Self {
-        let mapping = desc.mapping;
-        let root = ControllerView::make_dom(desc);
-        elem.append_child(&root);
+        let dom: Box<ControllerDom> = match desc.mapping {
+            GamepadMappingType::Standard => Box::new(MappedDom::new(desc)),
+            _ => Box::new(UnmappedDom::new(desc))
+        };
 
-        select_from(&root, ".gp-name").set_text_content(&desc.name);
+        elem.append_child(dom.root());
 
         Self {
-            mapping,
-            root,
+            dom,
         }
-    }
-
-    fn make_dom(desc: &GamepadDescription) -> Element {
-        match desc.mapping {
-            GamepadMappingType::Standard => ControllerView::make_standard_dom(),
-            _ => ControllerView::make_nonstandard_dom(desc),
-        }
-    }
-
-    fn make_standard_dom() -> Element {
-        let elem = select("#standard-template").clone_node(CloneKind::Deep).unwrap();
-        elem.remove_attribute("id");
-        elem
-    }
-
-    fn make_nonstandard_dom(dec: &GamepadDescription) -> Element {
-        // create elements for each button and axis
-        unimplemented!()
     }
 
     pub fn handle_event(&self, data: &EventData) {
         match data {
-            &EventData::Axis(i, val) => self.set_axis(i, val),
-            &EventData::Button(i, pressed) => self.set_button(i, pressed),
-            &EventData::ButtonValue(i, val) => self.set_button_value(i, val),
+            &EventData::Axis(i, val) => self.dom.set_axis(i, val),
+            &EventData::Button(i, pressed) => self.dom.set_button(i, pressed),
+            &EventData::ButtonValue(i, val) => self.dom.set_button_value(i, val),
             _ => (),
         }
     }
+}
 
-    fn set_button(&self, index: usize, pressed: bool) {
-
-        let selector = if self.mapping == GamepadMappingType::Standard {
-            match self.mapping.map_button(index).unwrap() {
-                Button::South => ".gp-a",
-                Button::East => ".gp-b",
-                Button::West => ".gp-x",
-                Button::North => ".gp-y",
-                Button::LT1 => ".gp-left-triggers .gp-trigger-1",
-                Button::RT1 => ".gp-right-triggers .gp-trigger-1",
-                Button::LT2 => ".gp-left-triggers .gp-trigger-2",
-                Button::RT2 => ".gp-right-triggers .gp-trigger-2",
-                Button::Select => ".gp-select",
-                Button::Start => ".gp-start",
-                Button::LeftStick => ".gp-stick-left",
-                Button::RightStick => ".gp-stick-right",
-                Button::Up => ".gp-dpad-up",
-                Button::Down => ".gp-dpad-down",
-                Button::Left => ".gp-dpad-left",
-                Button::Right => ".gp-dpad-right",
-                Button::Home => ".gp-home",
-            }
-        }
-        else {
-            unimplemented!()
-        };
-
-
-        let style = if pressed { "background-color: orange" } else { "" };
-        select_from(&self.root, selector).set_attribute("style", style).unwrap();
-    }
-
-    fn set_axis(&self, index: usize, val: f64) {
-
-        if self.mapping == GamepadMappingType::Standard {
-            let (selector, is_x) = match self.mapping.map_axis(index).unwrap() {
-                Axis::LeftStickX => (".gp-stick-left-x", true),
-                Axis::LeftStickY => (".gp-stick-left-y", false),
-                Axis::RightStickX => (".gp-stick-right-x", true),
-                Axis::RightStickY => (".gp-stick-right-y", false),
-            };
-
-            let style = format!("{}: {}%",
-                if is_x { "left" } else { "top" },
-                (50.0 + val * 50.0)
-            );
-
-            select_from(&self.root, selector).set_attribute("style", &style).unwrap();
-
-        }
-        else {
-            unimplemented!()
-        }
-
-    }
-
-    fn set_button_value(&self, index: usize, val: f64) {
-        if self.mapping == GamepadMappingType::Standard {
-            let selector = match self.mapping.map_button(index).unwrap() {
-                Button::LT2 => Some(".gp-left-triggers div div"),
-                Button::RT2 => Some(".gp-right-triggers div div"),
-                _ => None,
-            };
-
-            if let Some(selector) = selector {
-                let elem = select_from(&self.root, selector);
-                let style = format!("bottom: {}%", val * 100.0);
-                elem.set_attribute("style", &style).unwrap();
-            }
-        }
-        else {
-            unimplemented!()
-        }
+impl Drop for ControllerView {
+    fn drop(&mut self) {
+        let root = self.dom.root();
+        root.parent_node().unwrap().remove_child(root).unwrap();
     }
 }
 
@@ -210,7 +239,7 @@ impl State {
     }
 
     fn disconnect(&mut self, index: usize) {
-        unimplemented!()
+        self.views[index] = None;
     }
 }
 

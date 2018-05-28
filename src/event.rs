@@ -58,6 +58,10 @@ impl Display for EventData {
 
 impl Display for Event {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "Pad {} {}", self.gamepad.index, self.data)
+        write!(f, "Pad {} {}", self.gamepad.index, self.data)?;
+        if self.data == EventData::Connected {
+            write!(f, " {}", self.gamepad.name)?;
+        }
+        Ok(())
     }
 }
