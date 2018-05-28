@@ -14,7 +14,7 @@
 
             <div id="standard-template">
                 <h2 class="gp-name"></h2>
-                <h3>Mapping: Standard</h3>
+                <h3>Standard Mapping</h3>
                 <div class="gp-main">
                     <div class="gp-dpad">
                         <div class="gp-dpad-up gp-button">
@@ -39,13 +39,17 @@
                     <div class="gp-left-triggers">
                         <div class="gp-trigger-1 gp-button"></div>
                         <div class="gp-trigger-2 gp-button">
-                            <div class="gp-trigger-axis" style="bottom: 0%"></div>
+                            <div class="gp-trigger-axis-bound">
+                                <div class="gp-trigger-axis"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="gp-right-triggers">
                         <div class="gp-trigger-1 gp-button"></div>
                         <div class="gp-trigger-2 gp-button">
-                            <div class="gp-trigger-axis" style="bottom: 0%"></div>
+                            <div class="gp-trigger-axis-bound">
+                                <div class="gp-trigger-axis"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="gp-select gp-button"></div>
@@ -77,18 +81,27 @@
             <!-- end standard template -->
 
             <div id="unmapped-template">
+                <h2 class="gp-name"></h2>
+                <h3>Unknown Mapping</h3>
                 <div class="gp-unmapped-axis-list"></div>
                 <div class="gp-unmapped-button-list"></div>
+                <hr>
             </div>
 
             <div class="gp-unmapped-axis" id="unmapped-axis-template">
                 <div class="gp-axis-index"></div>
-                <div class="gp-axis-level"></div>
+                <div class="gp-axis-box">
+                    <div class="gp-axis-level"></div>
+                </div>
             </div>
 
             <div class="gp-unmapped-button" id="unmapped-button-template">
+                <div class="gp-button">
+                    <div class="gp-button-level-bound">
+                        <div class="gp-button-level"></div>
+                    </div>
+                </div>
                 <div class="gp-button-index"></div>
-                <div class="gp-button"</div>
             </div>
 
         </div>

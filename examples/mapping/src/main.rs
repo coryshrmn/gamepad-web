@@ -38,6 +38,12 @@ fn select_from(parent: &impl IParentNode, selector: &str) -> Element {
         .expect(&format!("no such element \"{}\"", selector))
 }
 
+fn anon_clone(template: &Element) -> Element {
+    let elem = template.clone_node(CloneKind::Deep).unwrap();
+    elem.remove_attribute("id");
+    elem
+}
+
 fn gamepad_list() -> Element {
     select("#gamepad-list")
 }
@@ -56,8 +62,7 @@ struct MappedDom {
 
 impl MappedDom {
     fn new(desc: &GamepadDescription) -> Self {
-        let root = select("#standard-template").clone_node(CloneKind::Deep).unwrap();
-        root.remove_attribute("id");
+        let root = anon_clone(&select("#standard-template"));
 
         select_from(&root, ".gp-name").set_text_content(&desc.name);
 
@@ -116,8 +121,8 @@ impl ControllerDom for MappedDom {
 
     fn set_button_value(&self, index: usize, value: f64) {
         let selector = match self.mapping.map_button(index).unwrap() {
-            Button::LT2 => Some(".gp-left-triggers div div"),
-            Button::RT2 => Some(".gp-right-triggers div div"),
+            Button::LT2 => Some(".gp-left-triggers .gp-trigger-axis"),
+            Button::RT2 => Some(".gp-right-triggers .gp-trigger-axis"),
             _ => None,
         };
 
@@ -131,13 +136,41 @@ impl ControllerDom for MappedDom {
 
 struct UnmappedDom {
     root: Element,
-    buttons: Vec<Element>,
     axes: Vec<Element>,
+    buttons: Vec<Element>,
 }
 
 impl UnmappedDom {
     fn new(desc: &GamepadDescription) -> Self {
-        unimplemented!()
+        let root = anon_clone(&select("#unmapped-template"));
+
+        select_from(&root, ".gp-name").set_text_content(&desc.name);
+
+        let axis_list = select_from(&root, ".gp-unmapped-axis-list");
+        let axis_template = select("#unmapped-axis-template");
+        let axes = (0..desc.axis_count).map(|i| {
+            let elem = anon_clone(&axis_template);
+            select_from(&elem, ".gp-axis-index").set_text_content(&format!("{}", i));
+            axis_list.append_child(&elem);
+            let axis = select_from(&elem, ".gp-axis-level");
+            axis
+        });
+
+        let button_list = select_from(&root, ".gp-unmapped-button-list");
+        let button_template = select("#unmapped-button-template");
+        let buttons = (0..desc.button_count).map(|i| {
+            let elem = anon_clone(&button_template);
+            select_from(&elem, ".gp-button-index").set_text_content(&format!("{}", i));
+            button_list.append_child(&elem);
+            let button = select_from(&elem, ".gp-button");
+            button
+        });
+
+        Self {
+            root,
+            axes: axes.collect(),
+            buttons: buttons.collect(),
+        }
     }
 }
 
@@ -147,15 +180,26 @@ impl ControllerDom for UnmappedDom {
     }
 
     fn set_axis(&self, index: usize, value: f64) {
-        unimplemented!()
+        let axis = &self.axes[index];
+        let level = 50.0 - 50.0 * value;
+
+        let style = format!("top: {}%; height: {}%",
+            if value <= 0.0 { 50.0 } else { 50.0 - 50.0 * value },
+            (50.0 * value.abs())
+        );
+
+        axis.set_attribute("style", &style).unwrap();
     }
 
     fn set_button(&self, index: usize, pressed: bool) {
-        unimplemented!()
+        let style = if pressed { "background-color: orange" } else { "" };
+        self.buttons[index].set_attribute("style", style).unwrap();
     }
 
     fn set_button_value(&self, index: usize, value: f64) {
-        unimplemented!()
+        let elem = select_from(&self.buttons[index], ".gp-button-level");
+        let style = format!("bottom: {}%", value * 100.0);
+        elem.set_attribute("style", &style).unwrap();
     }
 }
 
@@ -168,8 +212,8 @@ impl ControllerView {
     /// Create a new view for this gamepad, as a child of elem.
     pub fn new(desc: &GamepadDescription, elem: &impl INode) -> Self {
         let dom: Box<ControllerDom> = match desc.mapping {
-            GamepadMappingType::Standard => Box::new(MappedDom::new(desc)),
-            _ => Box::new(UnmappedDom::new(desc))
+            GamepadMappingType::NoMapping => Box::new(UnmappedDom::new(desc)),
+            _ => Box::new(MappedDom::new(desc)),
         };
 
         elem.append_child(dom.root());
