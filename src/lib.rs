@@ -2,6 +2,7 @@ extern crate stdweb;
 
 mod event;
 mod gamepad;
+mod mapping;
 mod monitor;
 
 pub use event::{
@@ -13,5 +14,10 @@ pub use gamepad::{
     GamepadMappingType,
     GamepadState,
     GamepadStateChange,
+};
+pub use mapping::{
+    Axis,
+    Button,
+    Mapping,
 };
 pub use monitor::Monitor;
