@@ -1,2 +1,2 @@
 [workspace]
-members = ["log", "mapping"]
+members = ["layout", "log", "mapping"]

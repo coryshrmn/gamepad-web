@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Gamepad Layout</title>
+        <link rel="stylesheet" type="text/css" href="gamepad.css">
+    </head>
+    <body>
+        <h1>Gamepad Layout</h1>
+        <div id="gamepad-list"></div>
+        <div id="output"></div>
+
+        <div style="display: none">
+
+            <div id="standard-template">
+                <h2 class="gp-name"></h2>
+                <h3>Standard Mapping</h3>
+                <div class="gp-main">
+                    <div class="gp-dpad">
+                        <div class="gp-dpad-up gp-button">
+                            ⯅
+                        </div>
+                        <div class="gp-dpad-left gp-button">
+                            ⯇
+                        </div>
+                        <div class="gp-dpad-right gp-button">
+                            ⯈
+                        </div>
+                        <div class="gp-dpad-down gp-button">
+                            ⯆
+                        </div>
+                    </div>
+                    <div class="gp-abxy">
+                        <div class="gp-y gp-button"></div>
+                        <div class="gp-x gp-button"></div>
+                        <div class="gp-b gp-button"></div>
+                        <div class="gp-a gp-button"></div>
+                    </div>
+                    <div class="gp-left-triggers">
+                        <div class="gp-trigger-1 gp-button"></div>
+                        <div class="gp-trigger-2 gp-button">
+                            <div class="gp-trigger-axis-bound">
+                                <div class="gp-trigger-axis"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gp-right-triggers">
+                        <div class="gp-trigger-1 gp-button"></div>
+                        <div class="gp-trigger-2 gp-button">
+                            <div class="gp-trigger-axis-bound">
+                                <div class="gp-trigger-axis"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gp-select gp-button"></div>
+                    <div class="gp-start gp-button"></div>
+                    <div class="gp-home gp-button"></div>
+                    <div class="gp-stick-box gp-stick-left-box">
+                        <div class="gp-stick-bounds">
+                            <div class="gp-stick-x gp-stick-left-x">
+                                <div class="gp-stick-y gp-stick-left-y">
+                                    <div class="gp-stick gp-stick-left gp-button"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gp-stick-center"></div>
+                    </div>
+                    <div class="gp-stick-box gp-stick-right-box">
+                        <div class="gp-stick-bounds">
+                            <div class="gp-stick-x gp-stick-right-x">
+                                <div class="gp-stick-y gp-stick-right-y">
+                                    <div class="gp-stick gp-stick-right gp-button"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gp-stick-center"></div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <!-- end standard template -->
+
+            <div id="unmapped-template">
+                <h2 class="gp-name"></h2>
+                <h3>Unknown Mapping</h3>
+                <div class="gp-unmapped-axis-list"></div>
+                <div class="gp-unmapped-button-list"></div>
+                <hr>
+            </div>
+
+            <div class="gp-unmapped-axis" id="unmapped-axis-template">
+                <div class="gp-axis-index"></div>
+                <div class="gp-axis-box">
+                    <div class="gp-axis-level"></div>
+                </div>
+            </div>
+
+            <div class="gp-unmapped-button" id="unmapped-button-template">
+                <div class="gp-button">
+                    <div class="gp-button-level-bound">
+                        <div class="gp-button-level"></div>
+                    </div>
+                </div>
+                <div class="gp-button-index"></div>
+            </div>
+
+        </div>
+        <script src="layout.js"></script>
+    </body>
+</html>

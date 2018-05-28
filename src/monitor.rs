@@ -1,6 +1,7 @@
 use ::event::{
     Event,
     EventData,
+    MappedEvent,
 };
 use ::gamepad::{
     GamepadDescription,
@@ -31,12 +32,15 @@ impl From<GamepadDescription> for ConnectedPad {
     }
 }
 
+/// Listen for gamepad events
 pub struct Monitor {
     queue: VecDeque<Event>,
     pads: Vec<Option<ConnectedPad>>
 }
 
 impl Monitor {
+
+    /// Start listening for gamepad connections, disconnections, and input events.
     pub fn new() -> Self {
         Self {
             queue: VecDeque::new(),
@@ -54,7 +58,7 @@ impl Monitor {
         let next_state: GamepadState = raw.into();
 
         // queue any changes as events
-        queue.extend( next_state.diff(&pad.state)
+        queue.extend( next_state.changes_since(&pad.state)
             .map(|change| Event::new(pad.desc.clone(), (&change).into()))
         );
 
@@ -119,8 +123,8 @@ impl Monitor {
         }
     }
 
+    /// Get the next event.
     pub fn poll(&mut self) -> Option<Event> {
-
         if self.queue.is_empty() {
             self.fetch_update();
         }
@@ -128,7 +132,19 @@ impl Monitor {
         self.queue.pop_front()
     }
 
-    fn get_pad(&self, index: usize) -> Option<&ConnectedPad> {
+    /// Get the next input event, discard other events.
+    ///
+    /// This is best suited for a single-user interface, because it merges input from all connected gamepads.
+    pub fn poll_mapped(&mut self) -> Option<MappedEvent> {
+        while let Some(event) = self.poll() {
+            if let Some(mapped) = event.map() {
+                return Some(mapped)
+            }
+        }
+        None
+    }
+
+    fn pad(&self, index: usize) -> Option<&ConnectedPad> {
         if index < self.pads.len() {
             self.pads[index].as_ref()
         }
@@ -137,11 +153,16 @@ impl Monitor {
         }
     }
 
-    pub fn get_pad_description(&self, index: usize) -> Option<&GamepadDescription> {
-        self.get_pad(index).map(|pad| pad.desc.as_ref())
+    /// Get the description of the gamepad connected at this index.
+    pub fn pad_description(&self, index: usize) -> Option<&GamepadDescription> {
+        self.pad(index).map(|pad| pad.desc.as_ref())
     }
 
-    pub fn get_pad_state(&self, index: usize) -> Option<&GamepadState> {
-        self.get_pad(index).map(|pad| &pad.state)
+    /// Get the latest polled state of the gamepad connected at this index.
+    ///
+    /// This does not process new events; it returns a snapshot from the most recent poll.
+    /// Only [poll()](#method.poll) and [poll_mapped()](#method.poll_mapped) process events.
+    pub fn pad_state(&self, index: usize) -> Option<&GamepadState> {
+        self.pad(index).map(|pad| &pad.state)
     }
 }

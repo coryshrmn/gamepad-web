@@ -1,5 +1,6 @@
 use ::gamepad::GamepadMappingType;
 
+/// A named button on the standard gamepad.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Button {
     /// "A" on Xbox, "cross" on PlayStation, "B" on Nintendo.
@@ -38,6 +39,7 @@ pub enum Button {
     Home,
 }
 
+/// A named axis on the standard gamepad.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Axis {
     /// From left (-1.0) to right (1.0).
@@ -50,10 +52,15 @@ pub enum Axis {
     RightStickY,
 }
 
+/// A relation between indices and names, for buttons and axes.
 pub trait Mapping {
+    /// Get the name (if known) of the button at this index.
     fn map_button(&self, index: usize) -> Option<Button>;
+    /// Get the index (if known) of this button.
     fn button_index(&self, button: Button) -> Option<usize>;
+    /// Get the name (if known) of the axis at this index.
     fn map_axis(&self, index: usize) -> Option<Axis>;
+    /// Get the index (if known) of this axis.
     fn axis_index(&self, axis: Axis) -> Option<usize>;
 }
 
