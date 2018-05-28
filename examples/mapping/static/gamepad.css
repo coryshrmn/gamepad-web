@@ -1,0 +1,206 @@
+.gp-button {
+    border: 1px solid black;
+    border-radius: 10px;
+
+    /* put borders inside */
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.gp-button-pressed {
+    background-color: orange;
+}
+
+.gp-main {
+    position: relative;
+    overflow: auto;
+    width: 500px;
+    height: 300px;
+    margin: auto;
+    background-color: #AAA;
+}
+.gp-left {
+    float: left;
+    width: 45%;
+}
+.gp-middle {
+    float: left;
+    width: 10%;
+}
+.gp-right {
+    float: left;
+    width: 45%;
+}
+
+.gp-dpad {
+    position: absolute;
+    left: 5px;
+    top: 100px;
+    width: 100px;
+    height: 100px;
+}
+
+.gp-dpad div {
+    position: absolute;
+    width: 33%;
+    height: 33%;
+    text-align: center;
+}
+.gp-dpad-left {
+    left: 0%;
+    top: 33%;
+}
+.gp-dpad-right {
+    right: 0%;
+    top: 33%;
+}
+.gp-dpad-up {
+    top: 0%;
+    left: 33%;
+}
+.gp-dpad-down {
+    bottom: 0;
+    left: 33%;
+}
+
+.gp-abxy {
+    position: absolute;
+    right: 5px;
+    top: 100px;
+    width: 100px;
+    height: 100px;
+}
+
+.gp-abxy div {
+    position: absolute;
+    width: 33%;
+    height: 33%;
+    text-align: center;
+}
+.gp-x {
+    left: 0%;
+    top: 33%;
+}
+.gp-b {
+    right: 0%;
+    top: 33%;
+}
+.gp-y {
+    top: 0%;
+    left: 33%;
+}
+.gp-a {
+    bottom: 0;
+    left: 33%;
+}
+
+.gp-left-triggers {
+    left: 0;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+}
+.gp-right-triggers {
+    right: 0;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+}
+.gp-trigger-1 {
+    position: absolute;
+    left: 5%;
+    width: 90%;
+    height: 40%;
+    bottom: 5%;
+}
+.gp-trigger-2 {
+    position: absolute;
+    left: 5%;
+    width: 90%;
+    height: 40%;
+    top: 5%;
+}
+
+.gp-trigger-axis {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background-color: black;
+    border-radius: 10px;
+}
+
+.gp-select {
+    position: absolute;
+    width: 30px;
+    height: 15px;
+    left: 35%;
+    top: 50%;
+}
+
+.gp-start {
+    position: absolute;
+    width: 30px;
+    height: 15px;
+    right: 35%;
+    top: 50%;
+}
+
+.gp-home {
+    position: absolute;
+    width: 10%;
+    height: 10%;
+    left: 45%;
+    top: 35%;
+}
+
+.gp-stick-box {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    bottom: 10px;
+    border: 1px solid #44F;
+}
+
+.gp-stick-left-box {
+    left: 100px;
+}
+
+.gp-stick-right-box {
+    right: 100px;
+}
+
+.gp-stick-bounds {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+}
+
+.gp-stick {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+}
+
+.gp-stick-center {
+    position: absolute;
+    width: 10%;
+    height: 10%;
+    left: 45%;
+    top: 45%;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.gp-stick-x {
+    position: absolute;
+    width: 20px;
+    height: 100%;
+    left: 50%; /* code will override this to move axis*/
+}
+
+.gp-stick-y {
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    top: 50%; /* code will override this to move axis*/
+}
