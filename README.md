@@ -1,5 +1,7 @@
 # Event-based Gamepad Web Backend
 
+[![Build Status](https://travis-ci.org/coryshrmn/gamepad-web.svg?branch=master)](https://travis-ci.org/coryshrmn/gamepad-web)
+
 [Documentation](https://coryshrmn.github.io/gamepad-web/doc/gamepad_web/index.html)
 
 This crate extends the
@@ -37,12 +39,13 @@ fn next_frame(mut monitor: Monitor) {
     }
 
     // queue the next frame
+    // note: request_animation_frame() is not in gamepad-web
     request_animation_frame(move |_| next_frame(monitor));
 }
 
 ```
 
-See the full [mapping example](examples/mapping), using [stdweb](https://github.com/koute/stdweb) for `request_animation_frame`.
+See the full [mapping example](examples/mapping), using [stdweb](https://github.com/koute/stdweb) for `request_animation_frame()`.
 
 ## Running the Examples
 
@@ -66,4 +69,3 @@ The compiled examples are also hosted here:
 ## License
 
 Dual licensed under [Apache](LICENSE-APACHE) and [MIT](LICENSE-MIT).
-Use Apache unless your lawyers won't let you.

@@ -35,7 +35,7 @@ impl From<GamepadDescription> for ConnectedPad {
 /// Listen for gamepad events
 pub struct Monitor {
     queue: VecDeque<Event>,
-    pads: Vec<Option<ConnectedPad>>
+    pads: Vec<Option<ConnectedPad>>,
 }
 
 impl Monitor {

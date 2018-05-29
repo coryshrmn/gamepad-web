@@ -37,6 +37,7 @@
 //!     }
 //!
 //!     // queue the next frame
+//!     // note: request_animation_frame() is not in gamepad-web
 //!     request_animation_frame(move |_| next_frame(monitor));
 //! }
 //!
