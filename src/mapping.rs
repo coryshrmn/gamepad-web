@@ -149,3 +149,50 @@ impl Mapping for GamepadMappingType {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ::gamepad::GamepadMappingType;
+
+    #[test]
+    fn test_button_mapping() {
+        let standard = GamepadMappingType::Standard;
+        let unmapped = GamepadMappingType::NoMapping;
+
+        assert_eq!(standard.button_index(Button::South), Some(0));
+        assert_eq!(unmapped.button_index(Button::South), None);
+        assert_eq!(standard.button_index(Button::LeftStick), Some(10));
+        assert_eq!(unmapped.button_index(Button::LeftStick), None);
+
+        assert_eq!(standard.map_button(2), Some(Button::West));
+        assert_eq!(unmapped.map_button(2), None);
+        assert_eq!(standard.map_button(16), Some(Button::Home));
+        assert_eq!(unmapped.map_button(16), None);
+        assert_eq!(standard.map_button(17), None);
+        assert_eq!(unmapped.map_button(17), None);
+        assert_eq!(standard.map_button(1000000), None);
+        assert_eq!(unmapped.map_button(1000000), None);
+    }
+
+    #[test]
+    fn test_axis_mapping() {
+        let standard = GamepadMappingType::Standard;
+        let unmapped = GamepadMappingType::NoMapping;
+
+        assert_eq!(standard.axis_index(Axis::LeftStickX), Some(0));
+        assert_eq!(unmapped.axis_index(Axis::LeftStickX), None);
+        assert_eq!(standard.axis_index(Axis::RightStickY), Some(3));
+        assert_eq!(unmapped.axis_index(Axis::RightStickY), None);
+
+        assert_eq!(standard.map_axis(2), Some(Axis::RightStickX));
+        assert_eq!(unmapped.map_axis(2), None);
+        assert_eq!(standard.map_axis(1), Some(Axis::LeftStickY));
+        assert_eq!(unmapped.map_axis(1), None);
+        assert_eq!(standard.map_axis(4), None);
+        assert_eq!(standard.map_axis(4), None);
+        assert_eq!(unmapped.map_axis(4), None);
+        assert_eq!(standard.map_axis(1000000), None);
+        assert_eq!(unmapped.map_axis(1000000), None);
+    }
+}
