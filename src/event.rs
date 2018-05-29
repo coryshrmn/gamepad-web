@@ -119,3 +119,65 @@ impl Display for Event {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ::mapping::{
+        Axis,
+        Button,
+    };
+    use ::gamepad::GamepadMappingType;
+
+    #[test]
+    fn test_event_mapping() {
+        let mapped_pad = Rc::new(GamepadDescription {
+            index: 0,
+            name: String::from(""),
+            mapping: GamepadMappingType::Standard,
+            axis_count: 4,
+            button_count: 16,
+        });
+
+        let unmapped_pad = Rc::new(GamepadDescription {
+            index: 0,
+            name: String::from(""),
+            mapping: GamepadMappingType::NoMapping,
+            axis_count: 4,
+            button_count: 16,
+        });
+
+        assert_eq!(Event { gamepad: mapped_pad.clone(), data: EventData::Axis(1, 0.5) }.map(),
+            Some(MappedEvent::Axis(Axis::LeftStickY, 0.5))
+        );
+        assert_eq!(Event { gamepad: mapped_pad.clone(), data: EventData::Axis(5, -0.5) }.map(),
+            None
+        );
+        assert_eq!(Event { gamepad: unmapped_pad.clone(), data: EventData::Axis(1, 0.5) }.map(),
+            None
+        );
+
+        assert_eq!(Event { gamepad: mapped_pad.clone(), data: EventData::Button(1, true) }.map(),
+            Some(MappedEvent::ButtonPress(Button::East))
+        );
+        assert_eq!(Event { gamepad: mapped_pad.clone(), data: EventData::Button(16, false) }.map(),
+            Some(MappedEvent::ButtonRelease(Button::Home))
+        );
+        assert_eq!(Event { gamepad: mapped_pad.clone(), data: EventData::Button(17, true) }.map(),
+            None
+        );
+        assert_eq!(Event { gamepad: unmapped_pad.clone(), data: EventData::Button(1, true) }.map(),
+            None
+        );
+
+        assert_eq!(Event { gamepad: mapped_pad.clone(), data: EventData::ButtonValue(2, 0.5) }.map(),
+            Some(MappedEvent::ButtonValue(Button::West, 0.5))
+        );
+        assert_eq!(Event { gamepad: mapped_pad.clone(), data: EventData::ButtonValue(1000, 0.5) }.map(),
+            None
+        );
+        assert_eq!(Event { gamepad: unmapped_pad.clone(), data: EventData::ButtonValue(2, 0.5) }.map(),
+            None
+        );
+    }
+}
