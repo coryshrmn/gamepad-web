@@ -11,30 +11,38 @@ which emits an event for each state change,
 unlike the Web API,
 which only allows state querying.
 
-## Quick Start
+## Example
 
 ```rust
 use gamepad_web::*;
 
-// start listening for Gamepad events
-let mut monitor = Monitor::new();
+fn main() {
+    // start listening for Gamepad events
+    let mut monitor = Monitor::new();
 
-fn update() {
-    // process new input events
+    // start animation loop
+    next_frame(monitor);
+}
+
+fn next_frame(mut monitor: Monitor) {
+    // check for new input events
     while let Some(event) = monitor.poll_mapped() {
         match event {
             MappedEvent::ButtonPress(Button::South) => // "A" on Xbox
-                player.jump(),
+                jump(),
             MappedEvent::Axis(Axis::LeftStickX, x) =>
-                player.set_velocity(x),
+                set_velocity(x),
             _ => ()
         }
     }
+
+    // queue the next frame
+    request_animation_frame(move |_| next_frame(monitor));
 }
 
 ```
 
-See the full [mapping example](examples/mapping).
+See the full [mapping example](examples/mapping), using [stdweb](https://github.com/koute/stdweb) for `request_animation_frame`.
 
 ## Running the Examples
 
@@ -47,7 +55,7 @@ See the full [mapping example](examples/mapping).
         $ cd examples/mapping
         $ cargo web start
 
-3. Browse to [localhost:8000](http://localhost:8000).
+3. Browse [localhost:8000](http://localhost:8000).
 
 The compiled examples are also hosted here:
 

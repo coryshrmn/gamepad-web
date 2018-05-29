@@ -13,8 +13,9 @@
 //!
 //! ## Quick Start
 //!
-//! ```
+//! ```no_run
 //! use gamepad_web::*;
+//!
 //! fn main() {
 //!     // start listening for Gamepad events
 //!     let mut monitor = Monitor::new();
@@ -22,8 +23,9 @@
 //!     // start animation loop
 //!     next_frame(monitor);
 //! }
+//!
 //! fn next_frame(mut monitor: Monitor) {
-//!     // process new input events
+//!     // check for new input events
 //!     while let Some(event) = monitor.poll_mapped() {
 //!         match event {
 //!             MappedEvent::ButtonPress(Button::South) => // "A" on Xbox
@@ -37,10 +39,10 @@
 //!     // queue the next frame
 //!     request_animation_frame(move |_| next_frame(monitor));
 //! }
+//!
 //! # fn jump() {}
 //! # fn set_velocity(x: f64) {}
 //! # fn request_animation_frame(callback: impl FnOnce(f64) + 'static) {}
-//!
 //! ```
 
 #![deny(missing_docs)]

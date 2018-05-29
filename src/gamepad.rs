@@ -58,7 +58,7 @@ pub struct GamepadState {
 
 impl GamepadState {
 
-    /// The [DOMHighRestTimeStamp](https://developer.mozilla.org/en-US/docs/Web/API/DOMHighResTimeStamp)
+    /// The [DOMHighResTimeStamp](https://developer.mozilla.org/en-US/docs/Web/API/DOMHighResTimeStamp)
     /// when this gamepad was last updated.
     pub fn timestamp(&self) -> f64 {
         self.timestamp
