@@ -2,6 +2,17 @@
 name = "gamepad-web"
 version = "0.1.0"
 authors = ["Cory Sherman <coryshrmn@gmail.com>"]
+description = "Event-based gamepad web backend"
+documentation = "https://docs.rs/gamepad-web"
+homepage = "https://github.com/coryshrmn/gamepad-web"
+repository = "https://github.com/coryshrmn/gamepad-web"
+readme = "README.md"
+keywords = ["web", "gamepad", "controller", "wasm", "javascript"]
+categories = ["wasm", "web-programming", "games", "game-engine", "api-bindings"]
+license = "Apache-2.0 OR MIT"
+
+[badges]
+travis-ci = { repository = "coryshrmn/gamepad-web" }
 
 [dependencies]
 stdweb = { git = "https://github.com/koute/stdweb", rev = "52cf01616a1a32ecf63af9858437d37be743b7dd" }
